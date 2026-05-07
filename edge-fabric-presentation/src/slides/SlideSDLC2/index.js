@@ -40,27 +40,15 @@ const Body = styled.div`
   display:flex;flex-direction:column;justify-content:center;gap:0;
 `;
 
-/* Each row: full width, fixed height */
-const Row = styled.div`
-  display:flex;align-items:stretch;
-  height:158px;
-`;
+/* Row heights */
+const Row1 = styled.div`display:flex;align-items:stretch;height:150px;`;
+const Row2 = styled.div`display:flex;align-items:stretch;height:158px;`;
+const Row3 = styled.div`display:flex;align-items:stretch;height:150px;`;
 
-/* Arrow */
-const AW = 22;
-const ArrWrap = styled.div`
-  flex:0 0 ${AW}px;
-  display:flex;align-items:center;justify-content:center;
-  opacity:${p=>p.show?1:0};transition:opacity 0.2s;
-`;
-const HL = styled.div`height:2.5px;width:13px;background:rgba(0,220,255,0.85);box-shadow:0 0 4px rgba(0,200,232,0.5);`;
-const HT = styled.div`width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid rgba(0,220,255,0.95);`;
-function A({show}){ return <ArrWrap show={show}><HL/><HT/></ArrWrap>; }
-
-/* Card: flex:1 so all cards in a row share space equally */
+/* ── Standard Card ── */
 const Card = styled.div`
   flex:1;min-width:0;
-  padding:11px 12px 10px;border-radius:10px;box-sizing:border-box;
+  padding:11px 13px 10px;border-radius:10px;box-sizing:border-box;
   position:relative;display:flex;flex-direction:column;
   background:${p=>
     p.v==="gate"  ?"rgba(255,140,0,0.11)" :
@@ -85,78 +73,130 @@ const CHead = styled.div`
   border-bottom:1px solid rgba(255,255,255,0.09);
   padding-bottom:7px;margin-bottom:7px;flex-shrink:0;
 `;
-const CIcon = styled.span`font-size:22px;flex-shrink:0;margin-top:1px;`;
-const CNameWrap = styled.div`display:flex;flex-direction:column;min-width:0;`;
-const GBadge = styled.div`font-size:8px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,165,0,0.9);margin-bottom:3px;`;
-const CName = styled.div`
-  font-size:14px;font-weight:700;line-height:1.2;
-  color:${p=>p.gate?"rgba(255,175,30,1)":"#fff"};
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-`;
-const CTDDSub = styled.div`font-size:9px;font-weight:600;color:rgba(0,220,130,0.9);margin-top:2px;`;
-const CRow  = styled.div`display:flex;gap:4px;align-items:flex-start;margin-bottom:5px;`;
-const CL    = styled.div`font-size:9px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:rgba(0,200,232,0.75);width:28px;flex-shrink:0;padding-top:1px;`;
-const CV    = styled.div`font-size:12px;color:rgba(255,255,255,0.72);line-height:1.45;`;
-const Retry = styled.div`
+const CIcon  = styled.span`font-size:20px;flex-shrink:0;margin-top:1px;`;
+const CNameW = styled.div`display:flex;flex-direction:column;min-width:0;`;
+const GBadge = styled.div`font-size:7.5px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,165,0,0.9);margin-bottom:2px;`;
+const CName  = styled.div`font-size:14px;font-weight:700;line-height:1.2;color:${p=>p.gate?"rgba(255,175,30,1)":"#fff"};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`;
+const CTDDSb = styled.div`font-size:9px;font-weight:600;color:rgba(0,220,130,0.9);margin-top:2px;`;
+const CRow   = styled.div`display:flex;gap:4px;align-items:flex-start;margin-bottom:5px;`;
+const CL     = styled.div`font-size:9px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:rgba(0,200,232,0.75);width:28px;flex-shrink:0;padding-top:1px;`;
+const CV     = styled.div`font-size:12px;color:rgba(255,255,255,0.72);line-height:1.45;`;
+const Retry  = styled.div`
   position:absolute;top:-15px;left:50%;transform:translateX(-50%);
   font-size:6.5px;font-weight:700;white-space:nowrap;
   color:rgba(255,90,60,0.95);background:rgba(22,5,3,0.96);
   border:1px solid rgba(220,60,40,0.45);border-radius:5px;padding:2px 7px;
 `;
 
-/*
-  Snake connector: a wrapper div (height=36px) sits between rows.
-  Inside: a right-aligned vertical bar drops from the bottom of the last row,
-  a full-width horizontal line sweeps left, and an arrowhead points down-left
-  into the next row's first card.
-*/
-const SnakeWrap = styled.div`
+/* ── Compact mini-card used inside parallel block ── */
+const MiniCard = styled.div`
+  padding:8px 10px;border-radius:8px;box-sizing:border-box;
+  position:relative;display:flex;flex-direction:column;
+  flex:1;
+  background:${p=>p.v==="teal"?"rgba(0,175,120,0.09)":"rgba(255,255,255,0.048)"};
+  border:1.5px solid ${p=>p.v==="teal"?"rgba(0,175,120,0.5)":"rgba(0,200,232,0.28)"};
+  opacity:${p=>p.show?1:0};
+  transform:${p=>p.show?"translateY(0)":"translateY(6px)"};
+  transition:opacity 0.28s ease ${p=>p.t||0}s,transform 0.28s ease ${p=>p.t||0}s;
+`;
+const MHead = styled.div`
+  display:flex;align-items:center;gap:5px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding-bottom:5px;margin-bottom:5px;flex-shrink:0;
+`;
+const MIcon = styled.span`font-size:14px;flex-shrink:0;`;
+const MName = styled.div`font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`;
+const MTDDSb= styled.div`font-size:7.5px;font-weight:600;color:rgba(0,220,130,0.9);margin-top:1px;`;
+const MRow  = styled.div`display:flex;gap:3px;align-items:flex-start;margin-bottom:2px;`;
+const ML    = styled.div`font-size:7.5px;font-weight:800;text-transform:uppercase;color:rgba(0,200,232,0.7);width:22px;flex-shrink:0;padding-top:1px;`;
+const MV    = styled.div`font-size:9px;color:rgba(255,255,255,0.65);line-height:1.4;`;
+
+/* ── Parallel block: fork arrow + two stacked mini-cards + merge arrow ── */
+const ParWrap = styled.div`
+  flex:0 0 280px;
+  display:flex;align-items:stretch;
+  opacity:${p=>p.show?1:0};transition:opacity 0.3s ${p=>p.t||0}s;
   position:relative;
-  height:36px;
-  opacity:${p=>p.show?1:0};transition:opacity 0.3s;
 `;
-/* Vertical drop — right side for snake1 (after row1), left side for snake2 (after reversed row2) */
-const SDrop = styled.div`
-  position:absolute;${p=>p.left?"left:0":"right:0"};top:0;
-  width:3px;height:100%;
-  background:rgba(0,220,255,0.9);
-  box-shadow:0 0 6px rgba(0,200,232,0.5);
+const StackWrap = styled.div`flex:1;display:flex;flex-direction:column;gap:6px;`;
+
+/* parallel label */
+const ParLabel = styled.div`
+  position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+  font-size:7px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(0,220,255,0.7);background:rgba(8,13,28,0.95);
+  border:1px solid rgba(0,200,232,0.25);border-radius:5px;padding:2px 8px;white-space:nowrap;
 `;
-/* Horizontal bar along the BOTTOM */
-const SBar = styled.div`
-  position:absolute;bottom:0;left:0;right:0;
-  height:3px;
-  background:rgba(0,220,255,0.9);
-  box-shadow:0 0 6px rgba(0,200,232,0.5);
-`;
-/* Arrowhead pointing DOWN — right end for snake1 (into KB Publish), left end for snake2 (into Gate 2) */
-const STip = styled.div`
-  position:absolute;bottom:-12px;${p=>p.right?"right:-5px":"left:-5px"};
-  width:0;height:0;
-  border-left:10px solid transparent;
-  border-right:10px solid transparent;
-  border-top:14px solid rgba(0,220,255,0.98);
-  filter:drop-shadow(0 0 4px rgba(0,220,255,0.7));
-`;
-function Snake({show, left, tipRight}){
+
+const C = "rgba(0,220,255,0.9)";
+
+/* SVG branch — right side: entry from Gate1 (splits into 2 arrows pointing RIGHT into cards) */
+function BranchEntry({h}) {
+  const mid = h / 2;
+  const t1  = h * 0.22;
+  const b1  = h * 0.78;
   return (
-    <SnakeWrap show={show}>
-      <SDrop left={left}/><STip right={tipRight}/>
-    </SnakeWrap>
+    <svg width="28" height={h} style={{flexShrink:0,overflow:"visible"}}>
+      {/* vertical bar on right */}
+      <line x1="26" y1={t1} x2="26" y2={b1} stroke={C} strokeWidth="2.5"/>
+      {/* top branch → into card (pointing right = arrow at x=0) */}
+      <line x1="26" y1={t1} x2="4" y2={t1} stroke={C} strokeWidth="2.5"/>
+      <polygon points={`0,${t1-5} 8,${t1} 0,${t1+5}`} fill={C}/>
+      {/* bottom branch → into card */}
+      <line x1="26" y1={b1} x2="4" y2={b1} stroke={C} strokeWidth="2.5"/>
+      <polygon points={`0,${b1-5} 8,${b1} 0,${b1+5}`} fill={C}/>
+    </svg>
   );
 }
 
+/* SVG branch — left side: exit to Coder (collects 2 lines, exits LEFT with single arrow) */
+function BranchExit({h}) {
+  const mid = h / 2;
+  const t1  = h * 0.22;
+  const b1  = h * 0.78;
+  return (
+    <svg width="28" height={h} style={{flexShrink:0,overflow:"visible"}}>
+      {/* vertical bar on left */}
+      <line x1="2" y1={t1} x2="2" y2={b1} stroke={C} strokeWidth="2.5"/>
+      {/* top branch from card */}
+      <line x1="2" y1={t1} x2="24" y2={t1} stroke={C} strokeWidth="2.5"/>
+      {/* bottom branch from card */}
+      <line x1="2" y1={b1} x2="24" y2={b1} stroke={C} strokeWidth="2.5"/>
+      {/* single exit arrow pointing LEFT only */}
+      <polygon points={`0,${mid} 12,${mid-6} 12,${mid+6}`} fill={C}/>
+    </svg>
+  );
+}
+
+/* ── Horizontal arrow ── */
+const AW = 22;
+const ArrW = styled.div`flex:0 0 ${AW}px;display:flex;align-items:center;justify-content:center;opacity:${p=>p.show?1:0};transition:opacity 0.2s;`;
+const HL   = styled.div`height:2.5px;width:13px;background:rgba(0,220,255,0.85);box-shadow:0 0 4px rgba(0,200,232,0.5);`;
+const HT   = styled.div`width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid rgba(0,220,255,0.95);`;
+const HTL  = styled.div`width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:9px solid rgba(0,220,255,0.95);`;
+function A({show}){  return <ArrW show={show}><HL/><HT/></ArrW>; }
+function AL({show}){ return <ArrW show={show}><HTL/><HL/></ArrW>; }
+
+/* ── Snake connector ── */
+const SnakeWrap = styled.div`position:relative;height:36px;opacity:${p=>p.show?1:0};transition:opacity 0.3s;`;
+const SDrop = styled.div`position:absolute;${p=>p.left?"left:0":"right:0"};top:0;width:3px;height:100%;background:rgba(0,220,255,0.9);box-shadow:0 0 6px rgba(0,200,232,0.5);`;
+const STip  = styled.div`position:absolute;bottom:-12px;${p=>p.right?"right:-5px":"left:-5px"};width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:14px solid rgba(0,220,255,0.98);filter:drop-shadow(0 0 4px rgba(0,220,255,0.7));`;
+function Snake({show,left,tipRight}){
+  return <SnakeWrap show={show}><SDrop left={left}/><STip right={tipRight}/></SnakeWrap>;
+}
+
+/* ── Stage card component ── */
 function S({icon,name,tdd,ins,outs,v,show,t,retry,gate}) {
   return (
     <Card v={v} show={show} t={t} gate={gate}>
       {retry && <Retry>↺ {retry}</Retry>}
       <CHead>
         <CIcon>{icon}</CIcon>
-        <CNameWrap>
+        <CNameW>
           {gate && <GBadge>⏸ Human Gate</GBadge>}
           <CName gate={gate}>{name}</CName>
-          {tdd && <CTDDSub>Failing Tests First</CTDDSub>}
-        </CNameWrap>
+          {tdd && <CTDDSb>Failing Tests First</CTDDSb>}
+        </CNameW>
       </CHead>
       <CRow><CL>IN</CL><CV>{ins}</CV></CRow>
       <CRow><CL>OUT</CL><CV>{outs}</CV></CRow>
@@ -164,10 +204,35 @@ function S({icon,name,tdd,ins,outs,v,show,t,retry,gate}) {
   );
 }
 
+/* ── Parallel block: KB Publish || TDD Tests ── */
+function Parallel({show,t,h=158}) {
+  return (
+    <ParWrap show={show} t={t}>
+      <ParLabel>⟂ Parallel Execution</ParLabel>
+      {/* Left side: exit toward Coder — two lines converge, single arrow points left */}
+      <BranchExit h={h}/>
+      <StackWrap>
+        <MiniCard show={show} t={(t||0)}>
+          <MHead><MIcon>📚</MIcon><MName>KB Publish</MName></MHead>
+          <MRow><ML>IN</ML><MV>review.json</MV></MRow>
+          <MRow><ML>OUT</ML><MV>KB page</MV></MRow>
+        </MiniCard>
+        <MiniCard show={show} t={(t||0)+0.05} v="teal">
+          <MHead><MIcon>🧪</MIcon><MName>TDD Tests</MName><MTDDSb style={{marginLeft:4}}>Failing First</MTDDSb></MHead>
+          <MRow><ML>IN</ML><MV>plan.json + api_contract</MV></MRow>
+          <MRow><ML>OUT</ML><MV>test stubs + failing tests</MV></MRow>
+        </MiniCard>
+      </StackWrap>
+      {/* Right side: entry from Gate1 — splits into 2 arrows going right into cards */}
+      <BranchEntry h={h}/>
+    </ParWrap>
+  );
+}
+
 export default function SlideSDLC2() {
   const [step, setStep] = useState(0);
   useEffect(()=>{
-    const t=[0,280,530,760,970,1160,1340,1510,1670,1820,1960,2090,2210,2320];
+    const t=[0,280,530,760,970,1160,1380,1620,1840,2040,2220,2380,2520,2640];
     const ts=t.map((d,i)=>setTimeout(()=>setStep(i+1),d));
     return ()=>ts.forEach(clearTimeout);
   },[]);
@@ -178,52 +243,50 @@ export default function SlideSDLC2() {
       <Grid/><TopLine/>
       <Header>
         <H1>feature.yaml Workflow Execution</H1>
-        <HSub>AI-Driven SDLC Orchestration · Human Approval Gates · Sequential Execution</HSub>
+        <HSub>AI-Driven SDLC Orchestration · Parallel Execution · Human Approval Gates · Sequential Flow</HSub>
       </Header>
       <Body>
 
         {/* ── Row 1: Feature Req → Analyst → Planner → Reviewer → Gate 1 ── */}
-        <Row>
-          <S icon="📥" name="Feature Req."  ins="User Input + Jira"        outs="trigger event"              show={s>=1}  t={0}/>
+        <Row1>
+          <S icon="📥" name="Feature Req."  ins="User Input + Jira"       outs="trigger event"           show={s>=1}  t={0}/>
           <A show={s>=2}/>
-          <S icon="🔍" name="Analyst"       ins="User Input + Jira"        outs="requirement.json"           show={s>=2}  t={0}/>
+          <S icon="🔍" name="Analyst"       ins="User Input + Jira"       outs="requirement.json"        show={s>=2}  t={0}/>
           <A show={s>=3}/>
-          <S icon="📋" name="Planner"       ins="requirement.json"         outs="plan.json + api_contract"   show={s>=3}  t={0}/>
+          <S icon="📋" name="Planner"       ins="requirement.json"        outs="plan.json + api_contract" show={s>=3} t={0}/>
           <A show={s>=4}/>
-          <S icon="👁️" name="Reviewer"      ins="plan.json"                outs="review.json"                show={s>=4}  t={0} retry="→ Planner" v="purple"/>
+          <S icon="👁️" name="Reviewer"      ins="plan.json"               outs="review.json"             show={s>=4}  t={0} retry="→ Planner" v="purple"/>
           <A show={s>=5}/>
-          <S icon="🔐" name="Gate 1"        ins="review.json"              outs="Approved / Rejected"        show={s>=5}  t={0} retry="→ Analyst" v="gate" gate/>
-        </Row>
+          <S icon="🔐" name="Gate 1"        ins="review.json"             outs="Approved / Rejected"     show={s>=5}  t={0} retry="→ Analyst" v="gate" gate/>
+        </Row1>
 
-        {/* Snake: right drop → sweeps left → tip on RIGHT into KB Publish */}
+        {/* Snake: Gate1 (right) → down → into parallel block */}
         <Snake show={s>=5} tipRight/>
 
-        {/* ── Row 2 (reversed): Guardian ← Coverage ← Coder ← TDD Tests ← KB Publish ── */}
-        <Row style={{flexDirection:"row-reverse"}}>
-          <S icon="📚" name="KB Publish"    ins="review.json"              outs="KB page"                    show={s>=6}  t={0}/>
-          <A show={s>=7}/>
-          <S icon="🧪" name="TDD Tests"     ins="plan.json + api_contract" outs="test stubs + failing tests" show={s>=7}  t={0}   v="teal" tdd/>
-          <A show={s>=8}/>
-          <S icon="💻" name="Coder"         ins="plan + test stubs"        outs="changes.json + src files"   show={s>=8}  t={0}   v="blue"/>
-          <A show={s>=9}/>
-          <S icon="🔬" name="Coverage"      ins="src files + plan"         outs="test_report.json"           show={s>=9}  t={0}   v="teal"/>
-          <A show={s>=10}/>
-          <S icon="🛡️" name="Guardian"      ins="changes.json + test_report" outs="quality_report.json"      show={s>=10} t={0}/>
-        </Row>
+        {/* ── Row 2: [Parallel: KB Publish || TDD Tests] → Coder → Coverage → Guardian ── */}
+        <Row2 style={{flexDirection:"row-reverse"}}>
+          <Parallel show={s>=6} t={0}/>
+          <AL show={s>=7}/>
+          <S icon="💻" name="Coder"         ins="plan + test stubs"       outs="changes.json + src files" show={s>=7} t={0} v="blue"/>
+          <AL show={s>=8}/>
+          <S icon="🔬" name="Coverage"      ins="src files + plan"        outs="test_report.json"         show={s>=8} t={0} v="teal"/>
+          <AL show={s>=9}/>
+          <S icon="🛡️" name="Guardian"      ins="changes.json + test_report" outs="quality_report.json"   show={s>=9} t={0}/>
+        </Row2>
 
-        {/* Snake: left drop → sweeps right → tip on LEFT into Gate 2 */}
-        <Snake show={s>=10} left/>
+        {/* Snake: Guardian (left of reversed row) → down → Gate 2 */}
+        <Snake show={s>=9} left/>
 
         {/* ── Row 3: Gate 2 → Pipeline → Gate 3 → Merge Request ── */}
-        <Row>
-          <S icon="🔐" name="Gate 2"        ins="quality_report.json"      outs="Approved / Rejected"        show={s>=11} t={0} retry="→ Coder"  v="gate" gate/>
+        <Row3>
+          <S icon="🔐" name="Gate 2"        ins="quality_report.json"     outs="Approved / Rejected"     show={s>=10} t={0} retry="→ Coder"  v="gate" gate/>
+          <A show={s>=11}/>
+          <S icon="⚙️" name="Pipeline"      ins="changes + approved"      outs="pipeline_status.json"    show={s>=11} t={0} retry="↩ Retry"/>
           <A show={s>=12}/>
-          <S icon="⚙️" name="Pipeline"      ins="changes + approved"       outs="pipeline_status.json"       show={s>=12} t={0} retry="↩ Retry"/>
+          <S icon="🔐" name="Gate 3"        ins="pipeline_status.json"    outs="MR Approved"             show={s>=12} t={0}                   v="gate" gate/>
           <A show={s>=13}/>
-          <S icon="🔐" name="Gate 3"        ins="pipeline_status.json"     outs="MR Approved"                show={s>=13} t={0}                   v="gate" gate/>
-          <A show={s>=14}/>
-          <S icon="🚀" name="Merge Request" ins="MR Approved"              outs="pipeline_status + MR + Deploy" show={s>=14} t={0}               v="green"/>
-        </Row>
+          <S icon="🚀" name="Merge Request" ins="MR Approved"             outs="pipeline_status + MR + Deploy" show={s>=13} t={0}            v="green"/>
+        </Row3>
 
       </Body>
     </Shell>
