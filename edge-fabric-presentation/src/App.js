@@ -9,6 +9,8 @@ import Slide3_5 from './slides/Slide3_5';
 import Slide3 from './slides/Slide3';
 import Slide4 from './slides/Slide4';
 import Slide5 from './slides/Slide5';
+import SlideSDLC1 from './slides/SlideSDLC1';
+import SlideSDLC2 from './slides/SlideSDLC2';
 
 /**
  * SLIDES registry — add new slide components to this array
@@ -21,6 +23,8 @@ const SLIDES = [
   Slide3,    // Architecture
   Slide4,    // Consistent Hashing
   Slide5,    // Availability Problem & SWIM Protocol
+  SlideSDLC1, // AI-Driven SDLC — System Architecture
+  SlideSDLC2, // AI-Driven SDLC — feature.yml DAG
 ];
 
 const App = () => {
