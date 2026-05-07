@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#060d1f" />
+    <meta name="description" content="Edge Fabric — Team Atlas Presentation" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <title>Edge Fabric — Team Atlas</title>
+
+    <!-- Google Fonts: Source Sans Pro (body) + Josefin Sans (Museo Sans web fallback) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /*
+        Museo Sans local font-face:
+        Uses the system-installed Museo Sans if present,
+        falls back to Josefin Sans (loaded above) otherwise.
+      */
+      @font-face {
+        font-family: 'Museo Sans';
+        src: local('Museo Sans'), local('MuseoSans'), local('Museo Sans 300');
+        font-weight: 300;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Museo Sans';
+        src: local('Museo Sans 500'), local('MuseoSans-500'), local('Museo Sans');
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Museo Sans';
+        src: local('Museo Sans 700'), local('MuseoSans-700'), local('Museo Sans Bold');
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Museo Sans';
+        src: local('Museo Sans 900'), local('MuseoSans-900'), local('Museo Sans Black');
+        font-weight: 900;
+        font-style: normal;
+      }
+
+      /* Prevent FOUC */
+      html, body, #root {
+        margin: 0;
+        padding: 0;
+        background: #060d1f;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
