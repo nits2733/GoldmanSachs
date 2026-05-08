@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useState } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { SlideWrapper } from "../../components/SlideLayout";
+import Logo from "../../components/Logo";
 
 const fadeIn  = keyframes`from{opacity:0}to{opacity:1}`;
 const glowB   = keyframes`0%,100%{box-shadow:0 0 0 0 rgba(0,200,232,0)}50%{box-shadow:0 0 0 6px rgba(0,200,232,0.12)}`;
@@ -13,16 +14,16 @@ const Shell = styled(SlideWrapper)`
   background:#080d1c;overflow:hidden;
   font-family:"Inter","Segoe UI",system-ui,sans-serif;
 `;
+const LogoWrap = styled.div`
+  position:absolute;top:14px;right:40px;z-index:20;
+  animation:${fadeIn} 0.8s 0.2s ease both;
+`;
 const Grid = styled.div`
   position:absolute;inset:0;z-index:0;pointer-events:none;
   background-image:
     linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
     linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
   background-size:56px 56px;
-`;
-const TopLine = styled.div`
-  position:absolute;top:0;left:0;right:0;height:3px;z-index:10;
-  background:linear-gradient(90deg,transparent,#00c8e8 35%,#00c8e8 65%,transparent);
 `;
 const Header = styled.div`
   position:absolute;top:0;left:0;right:0;z-index:20;padding:22px 48px 0;
@@ -34,14 +35,14 @@ const HSub = styled.p`margin:3px 0 0;font-size:11px;color:rgba(255,255,255,0.35)
 /* Root layout */
 const Layout = styled.div`
   position:absolute;top:68px;bottom:46px;left:0;right:0;
-  display:flex;align-items:stretch;padding:0 20px;
+  display:flex;align-items:stretch;justify-content:center;padding:0;
 `;
 
 /* ── Side panel ── */
 const SidePanel = styled.div`
-  width:210px;flex-shrink:0;
+  width:190px;flex-shrink:0;
   display:flex;flex-direction:column;justify-content:center;gap:8px;
-  padding:${p=>p.right?"0 0 0 16px":"0 16px 0 0"};
+  padding:${p=>p.right?"0 0 0 20px":"0 20px 0 0"};
   animation:${p=>p.right
     ? css`${panelR} 0.5s ease ${p.delay||1}s both`
     : css`${panelL} 0.5s ease ${p.delay||0.6}s both`};
@@ -69,7 +70,7 @@ const HLine = styled.div`
 
 /* ── Pipeline column ── */
 const Pipeline = styled.div`
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  flex:0 0 auto;width:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
 `;
 
 /* Block */
@@ -134,7 +135,7 @@ export default function SlideSDLC1() {
   },[]);
   const s=step;
   const left=[
-    {icon:"⚡",label:"Commands"},
+    {icon:"🔒",label:"Context Isolation"},
     {icon:"🔄",label:"Workflows"},
     {icon:"🎯",label:"Skills"},
     {icon:"🔌",label:"MCP"},
@@ -154,7 +155,8 @@ export default function SlideSDLC1() {
   ];
   return (
     <Shell>
-      <Grid/><TopLine/>
+      <Grid/>
+      <LogoWrap><Logo alt="EPAM" width={220}/></LogoWrap>
       <Header><H1>AI-Driven SDLC Orchestration</H1><HSub>Simulating the Complete Software Development Lifecycle</HSub></Header>
       <Layout>
         {/* Left */}
@@ -211,11 +213,7 @@ export default function SlideSDLC1() {
           ))}
         </SidePanel>
       </Layout>
-      <TagRow>
-        <Tag>Context Isolation</Tag>
-        <Tag>Parallel Execution</Tag>
-        <Tag>State-Driven</Tag>
-      </TagRow>
+    
     </Shell>
   );
 }
