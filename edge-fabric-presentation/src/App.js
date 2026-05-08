@@ -14,6 +14,12 @@ import Slide7 from './slides/Slide7';
 import Slide8 from './slides/Slide8';
 import SlideSDLC1 from './slides/SlideSDLC1';
 import SlideSDLC2 from './slides/SlideSDLC2';
+import SlideOps1 from './slides/SlideOps1';
+import SlideOps3 from './slides/SlideOps3';
+import SlideOps4 from './slides/SlideOps4';
+import SlideOps5 from './slides/SlideOps5';
+import SlideOps6 from './slides/SlideOps6';
+import SlideEnd from './slides/SlideEnd';
 
 /**
  * SLIDES registry — add new slide components to this array
@@ -28,9 +34,13 @@ const SLIDES = [
   Slide5,    // Core Distributed System Features
   SlideSDLC1, // AI-Driven SDLC — System Architecture
   SlideSDLC2, // AI-Driven SDLC — feature.yml DAG
-  Slide6,    // Agentic Ops — The Problem
-  Slide7,    // Agentic Ops — The Solution
-  Slide8,    // Agentic Ops — Architecture & Modes
+  SlideOps1,  // Agentic Ops 1 — The Problem (Story)
+  Slide8,     // Agentic Ops 2 — Three-Layer Architecture (Eyes, Brain, Hands)
+  SlideOps3,  // Agentic Ops 3 — MCP Observe (The Eyes)
+  SlideOps4,  // Agentic Ops 4 — MCP Act (The Hands)
+  SlideOps5,  // Agentic Ops 5 — Ops Agent (The Brain)
+  SlideOps6,  // Agentic Ops 6 — The Approval Flow
+  SlideEnd,   // Thank You & Q&A
 ];
 
 const App = () => {
