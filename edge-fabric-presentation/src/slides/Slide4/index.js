@@ -56,14 +56,15 @@ const Slide4 = () => {
   const [phase, setPhase] = useState(0);
   const [paused, setPaused] = useState(false);
   const timersRef = useRef([]);
-  const started = useRef(false);
+  const mountedRef = useRef(false);
   const pausedAtRef = useRef(null);
   const remainingRef = useRef([]);
 
   // Phase schedule: [delay from start, phaseValue]
+  // Phases 1-3 (ring, servers, keys) are fast; phases 4+ are original pacing
   const SCHEDULE = [
-    [3000, 1], [8000, 2], [15000, 3], [22000, 4],
-    [32000, 5], [40000, 6], [50000, 7], [58000, 8],
+    [800, 1], [2500, 2], [5000, 3], [12000, 4],
+    [22000, 5], [30000, 6], [40000, 7], [48000, 8],
   ];
 
   const clearTimers = useCallback(() => {
@@ -71,7 +72,7 @@ const Slide4 = () => {
     timersRef.current = [];
   }, []);
 
-  const startTimers = useCallback((schedule) => {
+  const startTimersFromSchedule = useCallback((schedule) => {
     clearTimers();
     const now = Date.now();
     timersRef.current = schedule.map(([delay, p]) =>
@@ -81,12 +82,23 @@ const Slide4 = () => {
     remainingRef.current = schedule.map(([delay, p]) => ({ end: now + delay, phase: p }));
   }, [clearTimers]);
 
+  // Single mount effect — only runs once
   useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-    startTimers(SCHEDULE);
-    return () => clearTimers();
-  }, [startTimers, clearTimers]);
+    if (mountedRef.current) return;
+    mountedRef.current = true;
+
+    const now = Date.now();
+    timersRef.current = SCHEDULE.map(([delay, p]) =>
+      setTimeout(() => setPhase(p), delay)
+    );
+    remainingRef.current = SCHEDULE.map(([delay, p]) => ({ end: now + delay, phase: p }));
+
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handlePausePlay = useCallback(() => {
     if (paused) {
@@ -99,7 +111,7 @@ const Slide4 = () => {
         acc += gap;
         return [acc, r.phase];
       });
-      startTimers(newSchedule);
+      startTimersFromSchedule(newSchedule);
       setPaused(false);
     } else {
       // Pause: clear all timers, save remaining
@@ -109,18 +121,16 @@ const Slide4 = () => {
       pausedAtRef.current = now;
       setPaused(true);
     }
-  }, [paused, phase, startTimers, clearTimers]);
+  }, [paused, phase, startTimersFromSchedule, clearTimers]);
 
   const handleRestart = useCallback(() => {
     clearTimers();
     setPhase(0);
     setPaused(false);
-    started.current = false;
     setTimeout(() => {
-      started.current = true;
-      startTimers(SCHEDULE);
-    }, 100);
-  }, [clearTimers, startTimers]);
+      startTimersFromSchedule(SCHEDULE);
+    }, 50);
+  }, [clearTimers, startTimersFromSchedule]);
 
   const showRing    = phase >= 1;
   const showServers = phase >= 2;
@@ -130,6 +140,9 @@ const Slide4 = () => {
   const s2Leaving   = phase >= 6;
   const s2Gone      = phase >= 7;
   const summary     = phase >= 8;
+
+  // Stable key for arc config — only changes when arcs actually change
+  const arcConfigKey = s2Gone ? 'gone' : s4Joining ? 'joined' : 'initial';
 
   // Ownership percentages
   // Initial:  S1=33%(240°-360°), S2=33%(0°-120°), S3=33%(120°-240°)
@@ -303,28 +316,28 @@ const Slide4 = () => {
                 {showRing && (
                   <circle cx={CX} cy={CY} r={RADIUS} fill="none" stroke={CYAN} strokeWidth="1.8" opacity="0.35"
                     strokeDasharray={CIRCUMFERENCE} strokeDashoffset={CIRCUMFERENCE}
-                    style={{ animation:'ringDraw 5s 0.5s ease-out forwards' }} />
+                    style={{ animation:'ringDraw 2s 0.2s ease-out forwards' }} />
                 )}
 
                 {showRing && Array.from({ length: 12 }, (_, i) => {
                   const a = i * 30;
                   const inner = pos(a, RADIUS - 3);
                   const outer = pos(a, RADIUS + 3);
-                  return <line key={`t${i}`} x1={inner.x} y1={inner.y} x2={outer.x} y2={outer.y} stroke={CYAN} strokeWidth="0.6" opacity="0" style={{ animation:`fadeIn 0.6s ${2 + i * 0.1}s ease-out forwards` }} />;
+                  return <line key={`t${i}`} x1={inner.x} y1={inner.y} x2={outer.x} y2={outer.y} stroke={CYAN} strokeWidth="0.6" opacity="0" style={{ animation:`fadeIn 0.4s ${0.8 + i * 0.06}s ease-out forwards` }} />;
                 })}
 
                 {showServers && arcs.map((arc, i) => (
-                  <path key={`arc-${arc.a1}-${arc.a2}-${phase}`} d={arcD(arc.a1, arc.a2, ARC_R)} fill="none"
+                  <path key={`arc-${arc.a1}-${arc.a2}-${arcConfigKey}`} d={arcD(arc.a1, arc.a2, ARC_R)} fill="none"
                     stroke={arc.color} strokeWidth="16" opacity="0.18" strokeLinecap="round"
                     strokeDasharray="700" strokeDashoffset="700"
-                    style={{ animation:`arcReveal 3s ${0.5 + i * 0.4}s ease-out forwards` }} />
+                    style={{ animation:`arcReveal 1.5s ${0.2 + i * 0.25}s ease-out forwards` }} />
                 ))}
 
                 {showServers && arcs.map((arc, i) => {
                   const mid = midAngle(arc.a1, arc.a2);
                   const p = pos(mid, RADIUS - 42);
                   return (
-                    <g key={`pct-${arc.a1}-${arc.a2}-${phase}`} style={{ opacity:0, animation:`pctPop 1s ${2.5 + i * 0.5}s ease-out forwards` }}>
+                    <g key={`pct-${arc.a1}-${arc.a2}-${arcConfigKey}`} style={{ opacity:0, animation:`pctPop 0.6s ${1 + i * 0.3}s ease-out forwards` }}>
                       <text x={p.x} y={p.y + 4} textAnchor="middle" fill={arc.color} fontSize="11" fontWeight="700" opacity="0.75">
                         {arc.pct}%
                       </text>
@@ -333,7 +346,7 @@ const Slide4 = () => {
                 })}
 
                 {showRing && (
-                  <g style={{ opacity:0, animation:'fadeIn 3s 6s ease-out forwards' }}>
+                  <g style={{ opacity:0, animation:'fadeIn 1.5s 2s ease-out forwards' }}>
                     <text x={CX} y={CY - 6} textAnchor="middle" fill={CYAN} fontSize="10" opacity="0.45" letterSpacing="0.08em">{'\u21BB'} clockwise</text>
                     <text x={CX} y={CY + 10} textAnchor="middle" fill={DIM} fontSize="8.5">hash space 0°–360°</text>
                   </g>
@@ -344,7 +357,7 @@ const Slide4 = () => {
                   const p = pos(angle, RADIUS);
                   const col = keyColor(angle);
                   return (
-                    <g key={`key-${i}`} style={{ opacity:0, animation:`fadeIn 1.5s ${1.5 + i * 0.3}s ease-out forwards` }}>
+                    <g key={`key-${i}`} style={{ opacity:0, animation:`fadeIn 0.8s ${0.5 + i * 0.15}s ease-out forwards` }}>
                       <circle cx={p.x} cy={p.y} r="4" fill={col} opacity="0.9" />
                       <circle cx={p.x} cy={p.y} r="7" fill="none" stroke={col} strokeWidth="0.7" opacity="0.3" />
                     </g>
@@ -388,7 +401,7 @@ const Slide4 = () => {
                     <g key={s.id} style={{
                       animation: removing
                         ? 'nodeRemove 5s ease-in forwards'
-                        : `nodePop 2.2s ${2.2 + idx * 1.1}s ease-out both`,
+                        : `nodePop 1.2s ${0.3 + idx * 0.5}s ease-out both`,
                       transformOrigin: `${p.x}px ${p.y}px`,
                       opacity: removing ? undefined : 0,
                     }}>
@@ -448,7 +461,7 @@ const Slide4 = () => {
                   border:'1px solid rgba(255,255,255,0.06)',
                   background:'rgba(0,0,0,0.2)',
                   backdropFilter:'blur(4px)',
-                  opacity:0, animation:'fadeIn 3s 5.5s ease-out forwards',
+                  opacity:0, animation:'fadeIn 1.5s 1.5s ease-out forwards',
                 }}>
                   <p style={{ fontSize:8.5, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.16em', color:DIM, marginBottom:12 }}>Data Ownership</p>
                   {activeServers.map((s) => {
@@ -477,7 +490,7 @@ const Slide4 = () => {
                   padding:'14px 18px', borderRadius:10,
                   borderTop:`2px solid ${CYAN}30`,
                   background:'rgba(0,0,0,0.25)',
-                  opacity:0, animation:'fadeIn 3s 3s ease-out forwards',
+                  opacity:0, animation:'fadeIn 1.5s 1s ease-out forwards',
                 }}>
                   <p style={{ fontSize:8, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.14em', color:DIM, marginBottom:8 }}>Why This Matters</p>
                   <div style={{ display:'flex', gap:12, alignItems:'stretch' }}>
@@ -494,7 +507,7 @@ const Slide4 = () => {
               )}
 
               {showKeys && (
-                <div style={{ display:'flex', gap:14, flexWrap:'wrap', opacity:0, animation:'fadeIn 2.5s 5s ease-out forwards' }}>
+                <div style={{ display:'flex', gap:14, flexWrap:'wrap', opacity:0, animation:'fadeIn 1.5s 2s ease-out forwards' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:5 }}>
                     <div style={{ width:7, height:7, borderRadius:'50%', background:'white', border:'1.5px solid rgba(255,255,255,0.4)' }} />
                     <span style={{ fontSize:8.5, color:DIM }}>Data key</span>
