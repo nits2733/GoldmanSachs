@@ -139,12 +139,12 @@ function BranchEntry({h}) {
     <svg width="28" height={h} style={{flexShrink:0,overflow:"visible"}}>
       {/* vertical bar on right */}
       <line x1="26" y1={t1} x2="26" y2={b1} stroke={C} strokeWidth="2.5"/>
-      {/* top branch → into card (pointing right = arrow at x=0) */}
-      <line x1="26" y1={t1} x2="4" y2={t1} stroke={C} strokeWidth="2.5"/>
-      <polygon points={`0,${t1-5} 8,${t1} 0,${t1+5}`} fill={C}/>
-      {/* bottom branch → into card */}
-      <line x1="26" y1={b1} x2="4" y2={b1} stroke={C} strokeWidth="2.5"/>
-      <polygon points={`0,${b1-5} 8,${b1} 0,${b1+5}`} fill={C}/>
+      {/* top branch → into card (pointing LEFT) */}
+      <line x1="26" y1={t1} x2="8" y2={t1} stroke={C} strokeWidth="2.5"/>
+      <polygon points={`0,${t1} 10,${t1-5} 10,${t1+5}`} fill={C}/>
+      {/* bottom branch → into card (pointing LEFT) */}
+      <line x1="26" y1={b1} x2="8" y2={b1} stroke={C} strokeWidth="2.5"/>
+      <polygon points={`0,${b1} 10,${b1-5} 10,${b1+5}`} fill={C}/>
     </svg>
   );
 }
@@ -162,8 +162,6 @@ function BranchExit({h}) {
       <line x1="2" y1={t1} x2="24" y2={t1} stroke={C} strokeWidth="2.5"/>
       {/* bottom branch from card */}
       <line x1="2" y1={b1} x2="24" y2={b1} stroke={C} strokeWidth="2.5"/>
-      {/* single exit arrow pointing LEFT only */}
-      <polygon points={`0,${mid} 12,${mid-6} 12,${mid+6}`} fill={C}/>
     </svg>
   );
 }
