@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { SlideWrapper } from "../../components/SlideLayout";
+import Logo from "../../components/Logo";
 
 const fadeIn = keyframes`from{opacity:0}to{opacity:1}`;
 const gateP  = keyframes`
@@ -16,16 +17,16 @@ const Shell = styled(SlideWrapper)`
   background:#080d1c;overflow:hidden;
   font-family:"Inter","Segoe UI",system-ui,sans-serif;
 `;
+const LogoWrap = styled.div`
+  position:absolute;top:14px;right:40px;z-index:20;
+  animation:${fadeIn} 0.8s 0.2s ease both;
+`;
 const Grid = styled.div`
   position:absolute;inset:0;pointer-events:none;z-index:0;
   background-image:
     linear-gradient(rgba(255,255,255,0.016) 1px,transparent 1px),
     linear-gradient(90deg,rgba(255,255,255,0.016) 1px,transparent 1px);
   background-size:48px 48px;
-`;
-const TopLine = styled.div`
-  position:absolute;top:0;left:0;right:0;height:3px;z-index:10;
-  background:linear-gradient(90deg,transparent,#00c8e8 35%,#00c8e8 65%,transparent);
 `;
 const Header = styled.div`
   position:absolute;top:0;left:0;right:0;z-index:20;padding:13px 44px 0;
@@ -238,7 +239,8 @@ export default function SlideSDLC2() {
 
   return (
     <Shell>
-      <Grid/><TopLine/>
+      <Grid/>
+      <LogoWrap><Logo alt="EPAM" width={220}/></LogoWrap>
       <Header>
         <H1>feature.yaml Workflow Execution</H1>
         <HSub>AI-Driven SDLC Orchestration · Parallel Execution · Human Approval Gates · Sequential Flow</HSub>
